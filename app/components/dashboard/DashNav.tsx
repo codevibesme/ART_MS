@@ -1,4 +1,6 @@
 "use client";
+import { setMenu } from "@/app/libs/features/dashboard/dashboardSlice";
+import { RootState } from "@reduxjs/toolkit/query";
 import { useEffect, useState } from "react";
 import { BiSolidDashboard } from "react-icons/bi";
 import {
@@ -8,23 +10,50 @@ import {
   IoHelpCircleSharp,
 } from "react-icons/io5";
 import { RiTeamFill } from "react-icons/ri";
-const mainMenu: string[] = ["Dashboard", "Emails", "Tenants"];
-const settingsMenu: string[] = ["Profile", "Settings", "Help"];
+import { useDispatch, useSelector } from "react-redux";
+const mainMenu: { name: string; ico: JSX.Element }[] = [
+  {
+    name: "Dashboard",
+    ico: (
+      <BiSolidDashboard className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
+    ),
+  },
+  {
+    name: "Emails",
+    ico: (
+      <IoMailSharp className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
+    ),
+  },
+  {
+    name: "Tenants",
+    ico: (
+      <RiTeamFill className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
+    ),
+  },
+];
+const settingsMenu: { name: string; ico: JSX.Element }[] = [
+  {
+    name: "Profile",
+    ico: (
+      <IoPersonSharp className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
+    ),
+  },
+  {
+    name: "Settings",
+    ico: (
+      <IoSettingsSharp className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
+    ),
+  },
+  {
+    name: "Help",
+    ico: (
+      <IoHelpCircleSharp className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
+    ),
+  },
+];
 const DashNav: React.FC = () => {
-  const [main, setMain] = useState<number>(-1);
-
-  useEffect(() => {
-    let local: { item: number } | string | null;
-    local = localStorage.getItem("main");
-    local ? setMain(JSON.parse(local).item) : setMain(0);
-  }, []);
-  useEffect(() => {
-    if (main !== -1) {
-      const item = JSON.stringify({ item: main });
-      localStorage.setItem("main", item);
-    }
-  }, [main]);
-
+  const main = useSelector((state: any) => state.dash.menu);
+  const dispatch = useDispatch();
   return (
     <div className="w-1/6 h-full flex flex-col text-white px-6 py-4">
       <div className="flex  w-full h-fit mb-10 items-center">
@@ -46,36 +75,25 @@ const DashNav: React.FC = () => {
               ? "flex w-full h-fit items-center rounded-lg mb-2 hover:bg-gray-200 hover:text-black p-2 group cursor-pointer transition-transform duration-75"
               : "flex w-full h-fit items-center rounded-lg mb-2 p-2 group cursor-pointer transition-transform duration-75 bg-gray-200 text-black"
           }
-          onClick={() => setMain(idx)}
+          onClick={() => dispatch(setMenu(idx))}
         >
-          {idx === 0 && (
-            <BiSolidDashboard className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
-          )}
-          {idx === 1 && (
-            <IoMailSharp className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
-          )}
-          {idx === 2 && (
-            <RiTeamFill className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
-          )}
-          <p className="text-lg ms-2">{item}</p>
+          {item.ico}
+          <p className="text-lg ms-2">{item.name}</p>
         </div>
       ))}
       <h1 className="font-thin text-md tracking-widest mb-4">Settings</h1>
       {settingsMenu.map((item, idx) => (
         <div
           key={idx}
-          className="flex w-full h-fit items-center rounded-lg mb-2 hover:bg-gray-200 hover:text-black p-2 group cursor-pointer transition-transform duration-75"
+          onClick={() => dispatch(setMenu(idx + 3))}
+          className={
+            idx + 3 !== main
+              ? "flex w-full h-fit items-center rounded-lg mb-2 hover:bg-gray-200 hover:text-black p-2 group cursor-pointer transition-transform duration-75"
+              : "flex w-full h-fit items-center rounded-lg mb-2 p-2 group cursor-pointer transition-transform duration-75 bg-gray-200 text-black"
+          }
         >
-          {idx === 0 && (
-            <IoPersonSharp className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
-          )}
-          {idx === 1 && (
-            <IoSettingsSharp className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
-          )}
-          {idx === 2 && (
-            <IoHelpCircleSharp className="text-2xl p-1 bg-gray-700 rounded-md text-white" />
-          )}
-          <p className="text-lg ms-2">{item}</p>
+          {item.ico}
+          <p className="text-lg ms-2">{item.name}</p>
         </div>
       ))}
     </div>
