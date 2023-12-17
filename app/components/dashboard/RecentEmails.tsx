@@ -2,6 +2,7 @@ import { Email } from "@/app/types/types";
 import React from "react";
 import { Table } from "antd";
 import type { ColumnType } from "antd/es/table";
+import Link from "next/link";
 
 const columns: ColumnType<Email>[] = [
   {
@@ -36,9 +37,12 @@ const RecentEmails = ({ emails }: { emails: Email[] }) => {
     <div className="z-10 w-full h-fit shadow-md shadow-gray-300 rounded-lg p-4 mb-6 border pb-6">
       <div className="flex justify-between mb-4">
         <h1 className="text-xl ">Recent emails</h1>
-        <p className="text-lg font-extralight hover:underline hover:text-green-800 hover:font-normal cursor-pointer">
+        <Link
+          href={"/dashboard/emails"}
+          className="text-lg font-extralight hover:underline hover:text-green-800 hover:font-normal cursor-pointer"
+        >
           See all {"->"}
-        </p>
+        </Link>
       </div>
       <Table
         columns={columns}

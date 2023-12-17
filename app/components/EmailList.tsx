@@ -7,9 +7,11 @@ import type { InputRef } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { IoSearchOutline } from "react-icons/io5";
+import { useDashContext } from "../contexts/dashContext/DashContext";
 
 const EmailList = ({ emails }: { emails: Email[] }) => {
   type EmailIndex = keyof Email;
+  const { setMenu } = useDashContext();
   //   console.log(emails);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -17,6 +19,7 @@ const EmailList = ({ emails }: { emails: Email[] }) => {
   const [reload, setReload] = useState(false);
   useEffect(() => {
     setReload(true);
+    setMenu({ id: 1, name: "Emails" });
   }, []);
   const handleSearch = (
     selectedKeys: string[],
