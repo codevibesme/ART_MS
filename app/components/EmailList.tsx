@@ -99,11 +99,16 @@ const EmailList = ({ emails }: { emails: Email[] }) => {
     filterIcon: (filtered: boolean) => (
       <IoSearchOutline style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
+    onFilter: (value, record) => {
+      const dataIndexValue = record[dataIndex];
+      return (
+        dataIndexValue !== undefined &&
+        dataIndexValue
+          .toString()
+          .toLowerCase()
+          .includes((value as string).toLowerCase())
+      );
+    },
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
