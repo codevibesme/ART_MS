@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+
 import dashReducer from "./features/dashboard/dashboardSlice";
+import authReducer from "./features/auth/authSlice";
+
 export const store = configureStore({
-  reducer: {
-    dash: dashReducer,
-  },
+  reducer: { authReducer, dashReducer },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

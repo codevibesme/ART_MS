@@ -1,7 +1,9 @@
 "use client";
-import { setMenu } from "@/app/libs/features/dashboard/dashboardSlice";
-import { RootState } from "@reduxjs/toolkit/query";
+import { useDashContext } from "@/app/contexts/dashContext/DashContext";
+import { Menu } from "@/app/types/types";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+// import { setMenu } from "@/app/libs/features/dashboard/dashboardSlice";
 import { BiSolidDashboard } from "react-icons/bi";
 import {
   IoMailSharp,
@@ -10,7 +12,8 @@ import {
   IoHelpCircleSharp,
 } from "react-icons/io5";
 import { RiTeamFill } from "react-icons/ri";
-import { useDispatch, useSelector } from "react-redux";
+
+// import { useDispatch, useSelector } from "react-redux";
 const mainMenu: { name: string; ico: JSX.Element }[] = [
   {
     name: "Dashboard",
@@ -52,8 +55,26 @@ const settingsMenu: { name: string; ico: JSX.Element }[] = [
   },
 ];
 const DashNav: React.FC = () => {
-  const main = useSelector((state: any) => state.dash.menu);
-  const dispatch = useDispatch();
+  const router = useRouter();
+  // const main = useSelector((state: any) => state.dash.menu);
+  const [initialLoad, setInitialLoad] = useState(false);
+  const { menu, setMenu } = useDashContext();
+  useEffect(() => {
+    let item: string | null = localStorage.getItem("menu");
+    if (item !== null) {
+      const newMenu: Menu = JSON.parse(item);
+      setMenu((prevMenu) => ({
+        ...prevMenu,
+        id: newMenu.id,
+        name: newMenu.name,
+      }));
+    }
+  }, []);
+  useEffect(() => {
+    if (initialLoad) localStorage.setItem("menu", JSON.stringify(menu));
+    else setInitialLoad(true);
+  }, [menu]);
+  // const dispatch = useDispatch();
   return (
     <div className="w-1/6 h-full flex flex-col text-white px-6 py-4">
       <div className="flex  w-full h-fit mb-10 items-center">
@@ -71,11 +92,18 @@ const DashNav: React.FC = () => {
         <div
           key={idx}
           className={
-            idx !== main
+            idx !== menu.id
               ? "flex w-full h-fit items-center rounded-lg mb-2 hover:bg-gray-200 hover:text-black p-2 group cursor-pointer transition-transform duration-75"
               : "flex w-full h-fit items-center rounded-lg mb-2 p-2 group cursor-pointer transition-transform duration-75 bg-gray-200 text-black"
           }
-          onClick={() => dispatch(setMenu(idx))}
+          onClick={() => {
+            setMenu({ ...menu, name: item.name, id: idx });
+            router.push(
+              `/dashboard${
+                item.name === "Dashboard" ? "" : `/${item.name.toLowerCase()}`
+              }`
+            );
+          }}
         >
           {item.ico}
           <p className="text-lg ms-2">{item.name}</p>
@@ -85,9 +113,9 @@ const DashNav: React.FC = () => {
       {settingsMenu.map((item, idx) => (
         <div
           key={idx}
-          onClick={() => dispatch(setMenu(idx + 3))}
+          onClick={() => setMenu({ ...menu, id: idx + 3, name: item.name })}
           className={
-            idx + 3 !== main
+            idx + 3 !== menu.id
               ? "flex w-full h-fit items-center rounded-lg mb-2 hover:bg-gray-200 hover:text-black p-2 group cursor-pointer transition-transform duration-75"
               : "flex w-full h-fit items-center rounded-lg mb-2 p-2 group cursor-pointer transition-transform duration-75 bg-gray-200 text-black"
           }

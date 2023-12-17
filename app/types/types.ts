@@ -1,4 +1,4 @@
-export type Email = {
+export interface Email {
   id?: number;
   owner_id?: string;
   tenant_id?: string;
@@ -7,8 +7,8 @@ export type Email = {
   subject?: string;
   body?: string;
   timestamp?: string;
-};
-export type Tenant = {
+}
+export interface Tenant {
   id?: number;
   owner_name?: string;
   tenant_name?: string;
@@ -16,4 +16,15 @@ export type Tenant = {
   property_desc?: string;
   transaction_nett?: string;
   transaction_due_date?: string;
+}
+export type User = {
+  _id?: string;
+  name?: string;
+  email?: string;
+  username?: string;
+  photo?: string;
+};
+export type Menu = {
+  name: string;
+  id: number;
 };
